@@ -88,5 +88,5 @@ let gameCondition = true;
 while (gameCondition == true){
     myField.print();
     manageMovement(myField);
-    
+    /*test */
 }
