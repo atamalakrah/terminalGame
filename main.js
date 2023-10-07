@@ -12,15 +12,71 @@ class Field{
     /*Players start at 0,0 by default*/
     this.h = 0;
     this.v = 0;
+    this.maxH = 0;
+    this.maxV = 0;
     };
-
-    print(self) {
+    /*Prints the current field state */
+    print() {
         this.field.forEach(item =>{
             console.log(item.join(''));
         });
     };
+    /*generates a new field */
+    generateField(h, v, percentage){
+        /*Creates a blank array and random H and V holders*/
+        let fieldCreationState = [];
+        let randH = getRandomInt(h);
+        let randV = getRandomInt(v);
 
+        /*Sets the max bounds of the field */
+        this.maxH = h;
+        this.maxV = v;
+
+        /*Creates the 2 dimensional arrays based on the passed in horizontal and vertical values */
+        for(let i = 0; i < h; i++){
+            fieldCreationState.push([]);
+            for(let j = 0; j < v; j++){
+                fieldCreationState[i].push([]);
+            }
+        };
+        /*Sets the player character to 0,0 */
+        fieldCreationState[0][0] = pathCharacter;
+        /*Sets the hat to a random location after making sure the random values are both not 0*/
+        while (randH == 0 && randV ==0){
+            randH = getRandomInt(h);
+            randV = getRandomInt(v);
+        }
+        fieldCreationState[randV][randH] = hat;
+        /*calculates the number of holes that should be in the map*/
+        let numberOfHoles = Math.floor((h*v) * percentage);
+        /*Randomly fills in the holes only if there is an undefined value in the array, otherwise decrements i and tries again*/
+        for(let i = 0; i < numberOfHoles; i++){
+            randH = getRandomInt(h);
+            randV = getRandomInt(v);
+            if(fieldCreationState[randV][randH].length == 0){
+                fieldCreationState[randV][randH] = hole;
+            }
+            else{
+                i--;
+            }
+        }
+        /*Fills in the remaining undefined slots with the field character*/ 
+        for(let i = 0; i < v; i ++){
+            for (let j = 0; j < h; j++){
+                if(fieldCreationState[i][j].length == 0){
+                    fieldCreationState[i][j] = fieldCharacter;
+                }
+            }
+        }
+        return fieldCreationState;
+    }
 }
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+
 /*Checks if the player is on the hat */
 function winCondition(boardState, h, v){
     if(boardState.field[v][h] == hat){
@@ -31,7 +87,7 @@ function winCondition(boardState, h, v){
 /*Determines lose condition. Player enters a hole on the field or player walks out of bounds*/
 function loseCondition(boardState, h, v){
     /*Checks the player state via the (v)ertical and (h)orizontal position coordinates */
-    if((v > 3) || (h > 3) || (v < 0) || (h < 0)){
+    if((v > boardState.maxV) || (h > boardState.maxH) || (v < 0) || (h < 0)){
         console.log("You've stumbled out of bounds! Try again!");
         return true;
     }
@@ -81,12 +137,12 @@ function manageMovement(boardState){
     1,0 1,1 1,2
     2,0 2,1 2,2
 */
-const myField = new Field([[pathCharacter, fieldCharacter, hole], [fieldCharacter, hole, fieldCharacter], [fieldCharacter, hat, fieldCharacter]])
+const userField = new Field();
+userField.field = userField.generateField(9,9,.25);
 /*Maintains the game state.  True = On, False = Off */
 let gameCondition = true;
 /*Loops while the game condition is still true.  */
 while (gameCondition == true){
-    myField.print();
-    manageMovement(myField);
-    /*test */
+    userField.print();
+    manageMovement(userField);
 }
