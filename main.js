@@ -62,6 +62,10 @@ function manageMovement(boardState){
     else if(directionToMove == 'd'){
         attemptV = boardState.v + 1;
     }
+    else{
+        console.log('Enter a direction as (l)eft, (r)ight, (d)own, (u)p');
+        return;
+    }
     /*Checks the win and lose conditions, if either is met sets gamecondition to false to exit the program*/ 
     if(loseCondition(boardState,attemptH,attemptV) || winCondition(boardState,attemptH,attemptV))
     {
