@@ -70,12 +70,38 @@ class Field{
         }
         return fieldCreationState;
     }
+    /*This function creates a board based on selected difficulty
+    The board is split into X and Y coordinates. for example:
+    0,0 0,1 0,2
+    1,0 1,1 1,2
+    2,0 2,1 2,2*/
+    boardCreation(){
+        let correctValue = false;
+        /*Requests user to enter a difficulty*/
+        const selectDifficulty = prompt('Pick a difficulty!(e)asy, (m)edium, or (h)ard: ').toLowerCase();
+        while(!correctValue){
+            if(selectDifficulty == 'e'){
+                this.field = this.generateField(9,9,.25);
+                correctValue = true;
+            }
+            else if(selectDifficulty == 'm'){
+                this.field = this.generateField(12,12,.3);
+                correctValue = true;
+            }
+            else if(selectDifficulty == 'h'){
+                this.field = this.generateField(20,20,.4);
+                correctValue = true;
+            }
+            else{
+                console.log('Please select either e, m, or h for difficulty: ')
+            }
+        }
+    }
 }
-
+/*This function provides a random number based on the max value given to it*/
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
-
 
 /*Checks if the player is on the hat */
 function winCondition(boardState, h, v){
@@ -84,6 +110,7 @@ function winCondition(boardState, h, v){
         return true;
     };
 };
+
 /*Determines lose condition. Player enters a hole on the field or player walks out of bounds*/
 function loseCondition(boardState, h, v){
     /*Checks the player state via the (v)ertical and (h)orizontal position coordinates */
@@ -96,6 +123,7 @@ function loseCondition(boardState, h, v){
         return true;
     };
 };
+
 /*Manages the movement request and updates the board state*/
 function manageMovement(boardState){
     
@@ -132,15 +160,14 @@ function manageMovement(boardState){
     boardState.v = attemptV;
     boardState.field[boardState.v][boardState.h] = pathCharacter;
 }
-/*Initiates the field for play. The board is split into X and Y coordinates. for example:
-    0,0 0,1 0,2
-    1,0 1,1 1,2
-    2,0 2,1 2,2
-*/
+
+/*Creates the field for the game*/
 const userField = new Field();
-userField.field = userField.generateField(9,9,.25);
+userField.boardCreation();
+
 /*Maintains the game state.  True = On, False = Off */
 let gameCondition = true;
+
 /*Loops while the game condition is still true.  */
 while (gameCondition == true){
     userField.print();
