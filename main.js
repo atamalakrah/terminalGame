@@ -41,6 +41,8 @@ class Field{
         };
         /*Sets the player character to a random location */
         fieldCreationState[randV][randH] = pathCharacter;
+        fieldCreationState.maxH = randH;
+        fieldCreationState.maxV = randV;
         /*Sets the hat to a random location and ensures the location is not occupied by the player*/
         while(fieldCreationState[randV][randH] == pathCharacter){
             randH = getRandomInt(h);
@@ -123,17 +125,41 @@ function loseCondition(boardState, h, v){
         return true;
     };
 };
+/*Checks to see if there are nearby holes that could be filled */
+function checkNearbyHoles(boardState){
+    const v = boardState.v;
+    const h = boardState.h;
+    
+    if (v + 1 < boardState.maxV && boardState.field[v + 1][h] === hole) {
+        boardState.field[v + 1][h] = fieldCharacter;
+        console.log('Bridge placed!');
+    } else if (v - 1 >= 0 && boardState.field[v - 1][h] === hole) {
+        boardState.field[v - 1][h] = fieldCharacter;
+        console.log('Bridge placed!');
+    } else if (h + 1 < boardState.maxH && boardState.field[v][h + 1] === hole) {
+        boardState.field[v][h + 1] = fieldCharacter;
+        console.log('Bridge placed!');
+    } else if (h - 1 >= 0 && boardState.field[v][h - 1] === hole) {
+        boardState.field[v][h - 1] = fieldCharacter;
+        console.log('Bridge placed!');
+    } else {
+        console.log('No hole to fill!');
+    }
+}
 
 /*Manages the movement request and updates the board state*/
 function manageMovement(boardState){
     
-    const directionToMove = prompt('Pick a direction to move: ').toLowerCase();
+    const directionToMove = prompt('Pick a direction to move or lay down a (b)ridge if there are no nearby moves: ').toLowerCase();
     let attemptH = boardState.h;
     let attemptV = boardState.v;
     /*if the player enters 'exit' allows for exiting from the game immediately*/
     if(directionToMove == 'exit'){
         console.log('Thanks for playing! Exiting...')
         return gameCondition = false;
+    }
+    else if(directionToMove == 'b'){
+        checkNearbyHoles(boardState);
     }
     else if(directionToMove == 'l'){
         attemptH = boardState.h - 1;  
