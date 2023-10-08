@@ -39,14 +39,14 @@ class Field{
                 fieldCreationState[i].push([]);
             }
         };
-        /*Sets the player character to 0,0 */
-        fieldCreationState[0][0] = pathCharacter;
-        /*Sets the hat to a random location after making sure the random values are both not 0*/
-        while (randH == 0 && randV ==0){
+        /*Sets the player character to a random location */
+        fieldCreationState[randV][randH] = pathCharacter;
+        /*Sets the hat to a random location and ensures the location is not occupied by the player*/
+        while(fieldCreationState[randV][randH] == pathCharacter){
             randH = getRandomInt(h);
             randV = getRandomInt(v);
+            fieldCreationState[randV][randH] = hat;
         }
-        fieldCreationState[randV][randH] = hat;
         /*calculates the number of holes that should be in the map*/
         let numberOfHoles = Math.floor((h*v) * percentage);
         /*Randomly fills in the holes only if there is an undefined value in the array, otherwise decrements i and tries again*/
@@ -132,7 +132,8 @@ function manageMovement(boardState){
     let attemptV = boardState.v;
     /*if the player enters 'exit' allows for exiting from the game immediately*/
     if(directionToMove == 'exit'){
-        gameCondition = false;
+        console.log('Thanks for playing! Exiting...')
+        return gameCondition = false;
     }
     else if(directionToMove == 'l'){
         attemptH = boardState.h - 1;  
